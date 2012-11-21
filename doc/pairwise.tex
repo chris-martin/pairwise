@@ -1,0 +1,77 @@
+\documentclass[twocolumn]{article}
+
+\usepackage{amsmath,dsfont}
+\usepackage[vlined,algoruled]{algorithm2e}
+
+\author{Christopher Martin\\{\tt chris.martin@gatech.edu}}
+\date{}
+
+\title{
+$\nat \leftrightarrow \nat^2$ bijection
+for enumerating cardinality-$2$ subsets
+}
+
+\newcommand\nat{\ensuremath{\mathds{N}}}
+\newcommand\abs[1]{\ensuremath{\left\vert{#1}\right\vert}}
+\newcommand\closedOpen[2]{\ensuremath{\left[\,#1,#2\,\right)}}
+\newcommand\bigO[1]{\ensuremath{\mathcal{O}\left(#1\right)}}
+\newcommand\bracket[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand\arraysub[2]{\ensuremath{#1\!\left[\,#2\,\right]}}
+
+\SetKw{Yield}{yield}
+
+\begin{document}
+
+\maketitle
+
+\section{Motivation}
+
+Iteration over the distinct unordered cardinality-2 subsets
+of some finite set occurs commonly in algorithms
+(``$\forall\;\text{distinct pairs}\;(a\neq b)\in S,\text{ do }\ldots$'').
+
+With $S:\abs{S}=n$ represented by an array-like data
+structure with constant-time $\arraysub{S}{a}$ lookups,
+this has the trivial procedural implementation
+shown in Algorithm \ref{alg:double-loop}.
+
+\begin{algorithm}
+  \caption{
+  \label{alg:double-loop}
+    Typical double-loop structure
+    for iterating over pairs.
+  }
+  \For{
+    $a\in\closedOpen{0}{n}$\;
+  }{
+    \For{
+      $b\in\closedOpen{0}{i}$\;
+    }{
+      \Yield $\arraysub{S}{a}, \arraysub{S}{b}$\;
+    }
+  }
+\end{algorithm}
+
+We will show how to flatten this double loop into
+$\psi(n)\equiv\frac{1}{2}(n)(n-1)$
+iterations of a single loop with counter $i$
+by defining a mapping $P : i \rightarrow \{a \times b\}$
+that is computable in near-constant time.
+
+$P$ gives us direct access to a well-defined ordering of
+pairs, and the modified loop structure given as
+Algorithm \ref{alg:single-loop}
+and is more amenable to parallelization.
+
+\begin{algorithm}
+  \caption{Proposed single-loop structure.}
+  \label{alg:single-loop}
+  \For{
+    $i\in\closedOpen{0}{\psi(n)}$\;
+  }{
+    $(a,b) \gets P(i)$\;
+    \Yield $\arraysub{S}{a}, \arraysub{S}{b}$\;
+  }
+\end{algorithm}
+
+\end{document}
